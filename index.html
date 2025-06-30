@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Olympics Medal List</title>
+    <link rel="icon" type="image/png/x-icon" href="images/logoIcon.png">
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <header id="homeHeader">
+        <div class="left">
+            <div class="logo"><img src="images/logoIcon.png" alt="logo" height="80" width="100"></div>
+            <h2>Olympics</h2>
+        </div>
+        <div class="right">
+            <div class="Home">
+                <a href="index.html" class="noStyle">
+                    <h3>Home</h3>
+                </a>
+            </div>
+            <div class="about">
+                <a href="about.html" class="noStyle">
+                    <h3>About</h3>
+                </a>
+            </div>
+            <div class="Sports">
+                <a href="public/sports.html" class="noStyle">
+                    <h3>Sports</h3>
+                </a>
+            </div>
+        </div>
+    </header>
+    <main id="homeMain">
+        <div class="homeTop">
+            <div class="homeLeft">
+                <h1>Celebrate the Spirit of Olympics</h1>
+                <p>Track live medal tallies, explore sports, <br>and witness history in the making.</p>
+                <a class="noStyle" href="#tableHead"><button class="viewList">View List</button></a>
+            </div>
+            <div class="homeRight">
+            </div>
+        </div>
+        <h1 id="tableHead">Paris Olympics 2024</h1>
+        <div class="homeBottom">
+
+            <table>
+                <thead>
+                    <th>Sno</th>
+                    <th>Country</th>
+                    <th>Gold</th>
+                    <th>Silver</th>
+                    <th>Bronze</th>
+                    <th>Total</th>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+            <div class="selectYear">
+                <h2>Select Year</h2>
+                <select name="year" id="yearSelection">
+                    <option value="" selected>select</option>
+                    <option value="2024">2024</option>
+                    <option value="2020">2020</option>
+                    <option value="2016">2016</option>
+                    <option value="2012">2012</option>
+                    <option value="2008">2008</option>
+                </select>
+            </div>
+        </div>
+        <br><br>
+    </main>
+    <footer>
+        &copy; 2025 Olympics Medal Tally
+    </footer>
+    <script src="index.js">
+    </script>
+</body>
+
+</html>

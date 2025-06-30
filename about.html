@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png/x-icon" href="images/logoIcon.png">
+    <link rel="stylesheet" href="index.css">
+    <title>About</title>
+</head>
+
+<body>
+    <header>
+        <div class="left">
+            <div class="logo"><img src="images/logoIcon.png" alt="logo" height="80" width="100"></div>
+            <h2>Olympics</h2>
+        </div>
+        <div class="right">
+            <div class="Home">
+                <a href="index.html" class="noStyle">
+                    <h3>Home</h3>
+                </a>
+            </div>
+            <div class="about">
+                <a href="about.html" class="noStyle">
+                    <h3>About</h3>
+                </a>
+            </div>
+            <div class="Sports">
+                <a href="public/sports.html" class="noStyle">
+                    <h3>Sports</h3>
+                </a>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="box">
+            <div class="leftContent">
+                <h2>About the Olympic Medals</h2><br>
+                <p>
+                    This project provides a real-time overview of medals won by various countries
+                    across different Olympic sports. This platform ensures transparent and up-to-date information about
+                    ongoing competitions, allowing users to track the performance of nations and athletes.
+                    Our mission is to celebrate the spirit of sportsmanship and global unity by offering a user-friendly
+                    interface to explore medal statistics, discover popular sports, and witness historical trends in
+                    Olympic events.
+                    Whether you're a sports enthusiast, a data lover, or just curious about the world's biggest sporting
+                    event, this project aims to offer engaging insights and live updates that matter.
+                </p>
+
+            </div>
+            <div class="rightImage">
+                <!-- <img src="images/rightImage1.png" alt="Sports" height="300" width="300"> -->
+            </div>
+        </div>
+        <div class="box">
+            <div class="leftContent">
+                <h2>Here are few Sports under Olympics</h2>
+                <div class="sportsGallery">
+                    <img src="images/atheletics.jpeg" alt="Athletics" class="sport"
+                        data-info="Athletics is one of the core Olympic sports featuring track and field events like sprinting, long jump, and shot put.">
+                    <img src="images/swimming.jpeg" alt="Swimming" class="sport"
+                        data-info="Swimming events are fast-paced and include freestyle, backstroke, breaststroke, and butterfly races.">
+                    <img src="images/gymnastics.jpeg" alt="Gymnastics" class="sport"
+                        data-info="Gymnastics showcases strength, flexibility, and grace through events like floor routines and the pommel horse.">
+                    <img src="images/boxing.jpeg" alt="Boxing" class="sport"
+                        data-info="Boxing is a historic Olympic event where athletes compete in weight classes using technique and endurance.">
+                </div>
+            </div>
+            <div class="rightContent">
+                <img id="previewImage" src="images/atheletics.jpeg" alt="Preview" height="200" width="200">
+                <p id="imageInfo">Athletics is one of the core Olympic sports featuring track and field events like
+                    sprinting, long jump, and shot put.</p>
+            </div>
+        </div>
+        <h2 id="websiteFeatures">Features</h2>
+        <div class="features">
+            <div class="featureBlock">
+                <h3>Live Medal Updates</h3>
+                <p>Get real-time medal tally updates during Olympic events.</p>
+            </div>
+            <div class="featureBlock">
+                <h3>Sport Explorer</h3>
+                <p>View medals by sport and discover event-specific info.</p>
+            </div>
+            <div class="featureBlock">
+                <h3>Historical Stats</h3>
+                <p>Analyze past Olympic data for teams and countries.</p>
+            </div>
+            <div class="featureBlock">
+                <h3>Mobile-Friendly</h3>
+                <p>Access the site smoothly on all devices, anytime.</p>
+            </div>
+        </div>
+
+    </main>
+    <footer>
+        &copy; 2025 Olympics Medal Tally
+    </footer>
+    <script>
+        const sportsImages = document.querySelectorAll('.sport');
+        const previewImage = document.getElementById('previewImage');
+        const imageInfo = document.getElementById('imageInfo');
+
+        sportsImages.forEach(img => {
+            img.addEventListener('mouseover', () => {
+                previewImage.src = img.src;
+                previewImage.alt = img.alt;
+                imageInfo.textContent = img.getAttribute('data-info');
+            });
+        });
+
+    </script>
+</body>
+
+</html>

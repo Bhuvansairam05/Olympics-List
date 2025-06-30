@@ -1,0 +1,288 @@
+* {
+    padding: 0px;
+    margin: 0px;
+}
+
+.noStyle {
+    text-decoration: none;
+    color: black;
+}
+html{
+    scroll-padding-top:100px;
+}
+header {
+    padding-left: 10px;
+    width: 100%;
+    height: 12%;
+    border-bottom: 2px solid black;
+    position: fixed;
+    top: 0px;
+    margin-bottom: 450px;
+    display: flex;
+    z-index: 1000;
+    background-color: white;
+}
+
+.logo {
+    margin-right: 10px;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.left {
+    width: 70%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.right {
+    width: 30%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+main {
+    margin-top: 100px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease-out forwards;
+    animation-delay: 0.2s;
+    overflow-x: hidden;
+}
+#homeMain{
+    margin-top: 20px;
+}
+.homeTop{
+    height: 700px;
+    padding:60px;
+    height:600px;
+    line-height: 45px;
+    font-size: 20px;
+    display: flex;
+}
+.homeLeft{
+    flex:1;
+    display: flex;
+    flex-direction: column;
+    margin-right: 200px;
+    padding-top:100px;
+}
+.homeRight{
+    height: 700px;
+    width: 500px;
+    background-image: url("images/homeImage.jpg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: relative;
+}
+.homeBottom{
+    width: 100%;
+    display: flex;
+    gap:20px;
+    padding-left: 20px;
+    position: absolute;
+}
+.viewList{
+    width:150px;
+    padding:10px;
+    background-color: black;
+    color: white;
+}
+.box {
+    width: 100%;
+    padding: 2%;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.flag{
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+.leftContent {
+    width: 70%;
+    font-size: 20px;
+    line-height: 30px;
+    text-align: justify;
+}
+
+.rightImage {
+    height: 300px;
+    width: 300px;
+    background-image: url("images/rightImage1.png");
+    background-size: cover;
+}
+
+.rightContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+#tableHead{
+    margin-left:20px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+table {
+    flex: 1;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+.selectYear{
+    height: 300px;
+    width:250px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-right: 40px;
+    position: sticky;
+    top: 180px;
+}
+#yearSelection{
+    height: 40px;
+    width: 250px;
+    font-size: 20px;
+    text-align: center;
+}
+table th {
+    padding: 22px;
+    border-bottom: 1px solid black;
+    outline: none;
+    text-align: start;
+    font-size: 22px;
+}
+
+table td {
+    padding: 20px;
+    text-align: start;
+    font-size: 19px;
+}
+
+.rightImage {
+    text-align: center;
+}
+
+#imageInfo {
+    margin-top: 10px;
+    font-size: 20px;
+    line-height: 25px;
+}
+
+.sportsGallery {
+    display: flexbox;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+
+.sportsGallery img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: transform 0.3s;
+}
+
+.sportsGallery img:hover {
+    transform: scale(1.1);
+}
+.features{
+    width: 100%;
+    margin: 20px;
+    display: flex;
+    gap:25px;
+    margin-bottom: 50px;
+}
+.featureBlock{
+    padding: 15px;
+    line-height: 25px;
+    background-color: #e9f5ff;
+    border-radius: 10px;
+}
+#websiteFeatures{
+    margin:15px;
+}
+.liveMain{
+    padding: 15px;
+    height: 100%;
+    position: absolute;
+}
+.live-bottom{
+   display: flex;
+   gap: 10px;
+}
+.live-left{
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    gap:25px;
+    flex: 1;
+    border:2px solid black;
+}
+.live-right{
+    height: 350px;
+    padding: 10px;
+    width:70%;
+    border: 2px solid black;
+    position: sticky;
+    top:30px;
+}
+footer {
+    width: 100%;
+    position: fixed;
+    bottom: 0px;
+    display: flex;
+    justify-content: center;
+    background-color: black;
+    color: white;
+    font-size: 20px;
+}
+
+.hidden{
+    display: none;
+}
+@media (max-width:769px) {
+    .content{
+        grid-template-columns: repeat(2,300px);
+    }
+    
+}
+@media screen and (max-width: 426px) {
+    header {
+        height: auto;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .right {
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    main {
+        margin-top: 250px;
+    }
+
+    .box {
+        flex-direction: column;
+    }
+    .features{
+        flex-direction: column;
+    }
+    .content{
+        grid-template-columns: repeat(1,300px);
+    }
+}
