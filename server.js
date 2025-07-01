@@ -13,17 +13,6 @@ const POLL_INTERVAL = 60_000;
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
-const parsed = {
-  id: uuidv4(),
-  title: a.title,
-  short: a.title,
-  desc: a.description,
-  url: a.url,
-  image: a.urlToImage, // ✅ Make sure this is included
-  source: a.source.name,
-  ts: new Date(a.publishedAt).getTime()
-};
-
 app.use(cors({ origin: "*" }));
 app.use(express.json());
 
