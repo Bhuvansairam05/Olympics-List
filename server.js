@@ -1,59 +1,107 @@
 const express = require("express");
-const cors = require("cors");
 const http = require("http");
-const fs = require("fs");
+const cors = require("cors");
 const { Server } = require("socket.io");
+const axios = require("axios");
+const fs = require("fs");
+
+const PORT = 4000;
+const DATA_FILE = "./updates.json";
+const NEWS_API_KEY = process.env.NEWS_API_KEY || "PASTE_YOUR_KEY";
+const POLL_INTERVAL = 60_000;
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, {
-  cors: { origin: "*" }
-});
+const io = new Server(server, { cors: { origin: "*" } });
+const parsed = {
+  id: uuidv4(),
+  title: a.title,
+  short: a.title,
+  desc: a.description,
+  url: a.url,
+  image: a.urlToImage, // ✅ Make sure this is included
+  source: a.source.name,
+  ts: new Date(a.publishedAt).getTime()
+};
 
-app.use(cors());
+app.use(cors({ origin: "*" }));
 app.use(express.json());
-app.use(express.static("public"));
 
-const DATA_FILE = "./updates.json";
 let updates = [];
 let nextId = 1;
+let seenLinks = new Set();
+
 if (fs.existsSync(DATA_FILE)) {
   try {
-    const raw = fs.readFileSync(DATA_FILE, "utf-8");
-    updates = JSON.parse(raw);
+    updates = JSON.parse(fs.readFileSync(DATA_FILE, "utf-8")) || [];
+    updates.forEach(u => seenLinks.add(u.url));
     nextId = updates.length ? updates[0].id + 1 : 1;
-  } catch (err) {
-    console.error("Failed to parse updates.json:", err);
+  } catch (e) {
+    console.error("Error loading updates:", e);
   }
 }
 
-function saveUpdates() {
+function save() {
   fs.writeFileSync(DATA_FILE, JSON.stringify(updates, null, 2));
 }
 
-app.get("/updates", (req, res) => {
-  res.json(updates);
-});
+function push(item) {
+  updates.unshift(item);
+  seenLinks.add(item.url);
+  save();
+  io.emit("update", item);
+  console.log("🆕", item.short);
+}
+
+app.get("/updates", (_, res) => res.json(updates));
 
 app.post("/updates", (req, res) => {
   const { short, full } = req.body;
-  const update = {
-    id: nextId++,
-    short,
-    full,
-    ts: Date.now()
-  };
-  updates.unshift(update); 
-  saveUpdates();
-  io.emit("update", update); 
-  res.status(201).json({ message: "Update received" });
+  if (!short || !full) return res.status(400).json({ error: "short & full required" });
+  push({ id: nextId++, short, full, url: "", ts: Date.now() });
+  res.status(201).json({ ok: true });
 });
 
+async function pollNews() {
+  if (!NEWS_API_KEY || NEWS_API_KEY === "PASTE_YOUR_KEY") return;
+  const url = "https://newsapi.org/v2/everything";
+  try {
+    const { data } = await axios.get(url, {
+      params: {
+        apiKey: NEWS_API_KEY,
+        q: "olympics",
+        language: "en",
+        sortBy: "publishedAt",
+        pageSize: 30,
+      },
+    });
+    (data.articles || []).forEach(a => {
+      if (seenLinks.has(a.url)) return;
+      push({
+        id: nextId++,
+        short: a.title,
+        full: `
+    ${a.description || "No description available."}
+    <br><br>
+    <strong>Source:</strong> ${getHostname(a.url)}<br>
+    <strong>Published:</strong> ${new Date(a.publishedAt).toLocaleString()}
+    ${a.url ? `<br><a href="${a.url}" target="_blank">🌐 Read full article</a>` : ""}
+  `,
+        url: a.url,
+        image: a.urlToImage || "",
+        country: "global", // optional: you can update this if NewsAPI returns country
+        ts: Date.parse(a.publishedAt) || Date.now(),
+      });
 
-io.on("connection", (socket) => {
-  console.log("Client connected:", socket.id);
-});
+    });
+  } catch (err) {
+    console.error("NewsAPI error:", err.response?.data || err.message);
+  }
+}
 
-server.listen(4000, () => {
-  console.log(" Server running at http://localhost:4000");
-});
+setInterval(pollNews, POLL_INTERVAL);
+pollNews();
+
+io.on("connection", s => console.log("Client connected:", s.id));
+
+server.listen(PORT, () => console.log(`Olympic Live Feed running @ http://localhost:${PORT}`));

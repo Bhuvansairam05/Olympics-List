@@ -1,38 +1,84 @@
-const socket = io("http://localhost:4000");
-const left = document.querySelector(".live-left");
-const right = document.querySelector(".live-right");
-const cache = new Map();
+const updatesContainer = document.querySelector(".live-left");
+const detailBox = document.querySelector(".live-right");
+let allUpdates = [];
 
-function renderDetail(id) {
-  const obj = cache.get(id);
-  if (!obj) return;
-  right.innerHTML = `
-    <h2>${obj.short}</h2>
-    <p>${obj.full}</p>
-    <small>${new Date(obj.ts).toLocaleString()}</small>
-  `;
+function timeAgo(ts) {
+  const diff = Math.floor((Date.now() - ts) / 1000);
+  if (diff < 60) return `${diff}s ago`;
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return new Date(ts).toLocaleString();
 }
 
-function createCard({ id, short }) {
-  const div = document.createElement("div");
-  div.className = "update";
-  div.dataset.id = id;
-  div.textContent = short;
-  div.onclick = () => renderDetail(id);
-  return div;
+function getHostname(url) {
+  try {
+    return new URL(url).hostname.replace("www.", "");
+  } catch {
+    return "unknown";
+  }
 }
 
-function addUpdate(obj) {
-  if (cache.has(obj.id)) return;
-  cache.set(obj.id, obj);
-  left.prepend(createCard(obj));
+function flagEmoji(countryCode = "US") {
+  return countryCode.toUpperCase().replace(/./g, char => 
+    String.fromCodePoint(127397 + char.charCodeAt()));
 }
 
-fetch("./updates")
+// 👈 LEFT: All headlines
+function renderLeft(updates) {
+  updatesContainer.innerHTML = "";
+  updates.forEach(u => {
+    const div = document.createElement("div");
+    div.className = "update";
+    div.dataset.id = u.id;
+    div.innerHTML = `
+      <div class="update-content">
+        ${u.image ? `<img src="${u.image}" class="update-thumb" />` : ""}
+        <div>
+          <strong>${u.short}</strong>
+          <div class="meta">
+            ${timeAgo(u.ts)} • ${getHostname(u.url)} 
+            ${u.country ? `<img src="https://flagcdn.com/16x12/${u.country.toLowerCase()}.png" alt="flag" style="margin-left:5px;vertical-align:middle;" />` : ""}
+          </div>
+        </div>
+      </div>
+    `;
+    div.onclick = () => renderRight(u);
+    updatesContainer.appendChild(div);
+  });
+}
+
+
+// 👉 RIGHT: Full news
+function renderRight(update) {
+    detailBox.innerHTML = `
+    <div class="news-card-enhanced">
+        ${update.image ? `<img src="${update.image}" alt="News Image" class="news-image-enhanced" />` : ""}
+        <div class="news-content">
+            <h2 class="news-title">${update.short}</h2>
+            <p class="news-desc">${update.full}</p>
+            <div class="news-footer">
+                <span class="news-date">${new Date(update.ts).toLocaleString()}</span>
+                <span class="news-source">${getHostname(update.url)}</span>
+            </div>
+        </div>
+    </div>
+    `;
+}
+
+
+
+fetch("http://localhost:4000/updates")
   .then(res => res.json())
   .then(data => {
-    data.forEach(addUpdate);
-    if (data.length) renderDetail(data[0].id);
+    // Sort updates by timestamp in descending order (latest first)
+    allUpdates = data.sort((a, b) => new Date(b.ts) - new Date(a.ts));
+    renderLeft(allUpdates);
+    renderRight(allUpdates[0]); // Optional: Show the most recent one by default
   });
 
-socket.on("update", addUpdate);
+const socket = io("http://localhost:4000");
+socket.on("update", newUpdate => {
+  allUpdates.unshift(newUpdate); // Insert new update at the top
+  renderLeft(allUpdates);
+  renderRight(newUpdate); // Optional: Automatically show new one on right
+});
