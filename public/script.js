@@ -52,14 +52,11 @@ function renderLeft(updates) {
 function renderRight(update) {
     detailBox.innerHTML = `
     <div class="news-card-enhanced">
-        ${update.image ? `<img src="${update.image}" alt="News Image" class="news-image-enhanced" />` : ""}
+        
         <div class="news-content">
+        ${update.image ? `<img src="${update.image}" alt="News Image" class="news-image-enhanced" />` : ""}
             <h2 class="news-title">${update.short}</h2>
             <p class="news-desc">${update.full}</p>
-            <div class="news-footer">
-                <span class="news-date">${new Date(update.ts).toLocaleString()}</span>
-                <span class="news-source">${getHostname(update.url)}</span>
-            </div>
         </div>
     </div>
     `;
