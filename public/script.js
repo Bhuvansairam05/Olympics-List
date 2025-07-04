@@ -1,7 +1,6 @@
 const updatesContainer = document.querySelector(".live-left");
 const detailBox = document.querySelector(".live-right");
 let allUpdates = [];
-
 function timeAgo(ts) {
   const diff = Math.floor((Date.now() - ts) / 1000);
   if (diff < 60) return `${diff}s ago`;
@@ -9,7 +8,6 @@ function timeAgo(ts) {
   if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
   return new Date(ts).toLocaleString();
 }
-
 function getHostname(url) {
   try {
     return new URL(url).hostname.replace("www.", "");
@@ -17,13 +15,10 @@ function getHostname(url) {
     return "unknown";
   }
 }
-
 function flagEmoji(countryCode = "US") {
   return countryCode.toUpperCase().replace(/./g, char => 
     String.fromCodePoint(127397 + char.charCodeAt()));
 }
-
-// 👈 LEFT: All headlines
 function renderLeft(updates) {
   updatesContainer.innerHTML = "";
   updates.forEach(u => {
@@ -46,9 +41,6 @@ function renderLeft(updates) {
     updatesContainer.appendChild(div);
   });
 }
-
-
-// 👉 RIGHT: Full news
 function renderRight(update) {
     detailBox.innerHTML = `
     <div class="news-card-enhanced">
@@ -61,21 +53,17 @@ function renderRight(update) {
     </div>
     `;
 }
-
-
-
 fetch("http://localhost:4000/updates")
   .then(res => res.json())
   .then(data => {
-    // Sort updates by timestamp in descending order (latest first)
     allUpdates = data.sort((a, b) => new Date(b.ts) - new Date(a.ts));
     renderLeft(allUpdates);
-    renderRight(allUpdates[0]); // Optional: Show the most recent one by default
+    renderRight(allUpdates[0]);
   });
 
 const socket = io("http://localhost:4000");
 socket.on("update", newUpdate => {
-  allUpdates.unshift(newUpdate); // Insert new update at the top
+  allUpdates.unshift(newUpdate); 
   renderLeft(allUpdates);
-  renderRight(newUpdate); // Optional: Automatically show new one on right
+  renderRight(newUpdate);
 });

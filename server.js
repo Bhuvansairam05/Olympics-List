@@ -1,22 +1,14 @@
-// server.js  (Olympic Live Feed)
-require("dotenv").config();          // <-- .env support
-
+require("dotenv").config();
 const express = require("express");
 const http    = require("http");
 const cors    = require("cors");
 const axios   = require("axios");
 const fs      = require("fs");
 const { Server } = require("socket.io");
-
-// ────────────────────────────────
-//  Config
-// ────────────────────────────────
 const PORT          = process.env.PORT || 4000;
 const DATA_FILE     = "./updates.json";
-const NEWS_API_KEY  = "6150ddad3e9441a483215c02ca3801a8";
-const POLL_INTERVAL = 30 * 60_000;          // 30 min → 48 calls/day (safe)
-
-/* Helper: nice hostname for “Source: …” */
+const NEWS_API_KEY  = process.env.NEWS_API_KEY || "";
+const POLL_INTERVAL = 30 * 60_000;
 function getHostname(url) {
   try {
     return new URL(url).hostname.replace(/^www\./, "");
@@ -24,13 +16,9 @@ function getHostname(url) {
     return "unknown";
   }
 }
-
-/* Helper: persist to disk */
 function save() {
   fs.writeFileSync(DATA_FILE, JSON.stringify(updates, null, 2));
 }
-
-/* Helper: push new update everywhere */
 function push(item) {
   updates.unshift(item);
   seenLinks.add(item.url);
@@ -38,14 +26,9 @@ function push(item) {
   io.emit("update", item);
   console.log("🆕", item.short);
 }
-
-// ────────────────────────────────
-//  Bootstrap in‑memory state
-// ────────────────────────────────
 let updates    = [];
 let nextId     = 1;
 let seenLinks  = new Set();
-
 if (fs.existsSync(DATA_FILE)) {
   try {
     updates = JSON.parse(fs.readFileSync(DATA_FILE, "utf-8")) || [];
@@ -55,10 +38,6 @@ if (fs.existsSync(DATA_FILE)) {
     console.error("Error loading updates.json:", e);
   }
 }
-
-// ────────────────────────────────
-//  Express + Socket.io
-// ────────────────────────────────
 const app    = express();
 const server = http.createServer(app);
 const io     = new Server(server, { cors: { origin: "*" } });
@@ -75,16 +54,11 @@ app.post("/updates", (req, res) => {
   push({ id: nextId++, short, full, url: "", ts: Date.now() });
   res.status(201).json({ ok: true });
 });
-
-// ────────────────────────────────
-//  Poll NewsAPI
-// ────────────────────────────────
 async function pollNews() {
   if (!NEWS_API_KEY) {
     console.warn("NEWS_API_KEY missing – skipping poll");
     return;
   }
-
   try {
     const { data } = await axios.get(
       "https://newsapi.org/v2/everything",
@@ -102,8 +76,6 @@ async function pollNews() {
     (data.articles || []).forEach(a => {
   const title = a.title?.toLowerCase() || "";
   const description = a.description?.toLowerCase() || "";
-
-  // Filter only if "olympic" is in title or description
   if (seenLinks.has(a.url)) return;
   if (!title.includes("olympic") && !description.includes("olympic")) return;
 
@@ -114,7 +86,7 @@ async function pollNews() {
       ${a.description || "No description available."}<br><br>
       <strong>Source:</strong> ${getHostname(a.url)}<br>
       <strong>Published:</strong> ${new Date(a.publishedAt).toLocaleString()}<br>
-      <a href="${a.url}" target="_blank">🌐 Read full article</a>
+      <a href="${a.url}" target="_blank"> Read full article</a>
     `,
     url:    a.url,
     image:  a.urlToImage || "",
@@ -131,10 +103,10 @@ async function pollNews() {
 }
 
 setInterval(pollNews, POLL_INTERVAL);
-pollNews();          // first call immediately
+pollNews();    
 
 io.on("connection", s => console.log("Client connected:", s.id));
 
 server.listen(PORT, () =>
-  console.log(`🏃 Olympic Live Feed running @ http://localhost:${PORT}`)
+  console.log(` Olympic Live Feed running @ http://localhost:${PORT}`)
 );
