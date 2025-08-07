@@ -108,5 +108,5 @@ pollNews();
 io.on("connection", s => console.log("Client connected:", s.id));
 
 server.listen(PORT, () =>
-  console.log(` Olympic Live Feed running @ http://localhost:${PORT}`)
+  console.log(`Olympic Live Feed running @ https://olympics-backend-pjmj.onrender.com`)
 );
