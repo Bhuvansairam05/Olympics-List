@@ -53,7 +53,7 @@ function renderRight(update) {
     </div>
     `;
 }
-fetch("http://localhost:4000/updates")
+fetch("https://olympics-backend-pjmj.onrender.com/updates")
   .then(res => res.json())
   .then(data => {
     allUpdates = data.sort((a, b) => new Date(b.ts) - new Date(a.ts));
