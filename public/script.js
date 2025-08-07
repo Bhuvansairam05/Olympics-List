@@ -61,7 +61,7 @@ fetch("http://localhost:4000/updates")
     renderRight(allUpdates[0]);
   });
 
-const socket = io("http://localhost:4000");
+const socket = io("https://olympics-backend-pjmj.onrender.com");
 socket.on("update", newUpdate => {
   allUpdates.unshift(newUpdate); 
   renderLeft(allUpdates);
