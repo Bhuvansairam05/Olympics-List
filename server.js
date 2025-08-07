@@ -28,7 +28,7 @@ function push(item) {
   seenLinks.add(item.url);
   save();
   io.emit("update", item);
-  console.log("🆕", item.short);
+  console.log("new", item.short);
 }
 
 let updates    = [];
@@ -52,10 +52,8 @@ const io     = new Server(server, { cors: { origin: "*" } });
 app.use(cors({ origin: "*" }));
 app.use(express.json());
 
-// ✅ Serve frontend from "public" folder
 app.use(express.static("public"));
 
-// 🔄 REST API endpoints
 app.get("/updates", (_, res) => res.json(updates));
 
 app.post("/updates", (req, res) => {
@@ -67,10 +65,9 @@ app.post("/updates", (req, res) => {
   res.status(201).json({ ok: true });
 });
 
-// 🔄 Poll news API every 30 minutes
 async function pollNews() {
   if (!NEWS_API_KEY) {
-    console.warn("NEWS_API_KEY missing – skipping poll");
+    console.warn("NEWS_API_KEY missing - skipping poll");
     return;
   }
   try {
@@ -121,5 +118,5 @@ pollNews();
 io.on("connection", s => console.log("Client connected:", s.id));
 
 server.listen(PORT, () =>
-  console.log(`🏃 Olympic Live Feed running @ https://olympics-backend-pjmj.onrender.com`)
+  console.log(`Olympic Live Feed running @ https://olympics-backend-pjmj.onrender.com`)
 );
