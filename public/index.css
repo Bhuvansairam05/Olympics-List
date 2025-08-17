@@ -90,10 +90,13 @@ main {
     position: absolute;
 }
 .viewList{
-    width:150px;
-    padding:10px;
+    width:auto;
+    font-size:22px;
+    padding:10px 30px 10px 30px;
     background-color: black;
     color: white;
+    border: none;
+    border-radius: 30px;
 }
 .box {
     width: 100%;
