@@ -9,7 +9,7 @@ const { Server } = require("socket.io");
 const PORT          = process.env.PORT || 4000;
 const DATA_FILE     = "./updates.json";
 const NEWS_API_KEY  = process.env.NEWS_API_KEY || "";
-const POLL_INTERVAL = 30 * 60_000;
+const POLL_INTERVAL = 30 * 6000;
 
 function getHostname(url) {
   try {
@@ -118,5 +118,5 @@ pollNews();
 io.on("connection", s => console.log("Client connected:", s.id));
 
 server.listen(PORT, () =>
-  console.log(`Olympic Live Feed running @ https://olympics-backend-pjmj.onrender.com`)
+  console.log(`Olympic Live Feed running at https://olympics-backend-pjmj.onrender.com`)
 );
